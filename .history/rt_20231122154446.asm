@@ -114,17 +114,18 @@ trigger_alarm PROC
 trigger_alarm ENDP
 
 ConvertBCDToDisplay PROC
+    ; Convert BCD to decimal and display
     PUSH AX     ; Save AX register
+    MOV AH, AL  ; Copy AL to AH
 
-    ; Convert high nibble (tens place)
-    MOV AH, AL
+    ; High nibble (tens place)
     AND AH, 0F0h
     SHR AH, 4   ; Shift right 4 bits
     ADD AH, '0' ; Convert to ASCII
     MOV DL, AH
     CALL DISP
 
-    ; Convert low nibble (units place)
+    ; Low nibble (units place)
     POP AX      ; Restore AX register
     AND AL, 0Fh
     ADD AL, '0' ; Convert to ASCII
@@ -133,7 +134,6 @@ ConvertBCDToDisplay PROC
 
     RET
 ConvertBCDToDisplay ENDP
-
 
 DISP PROC
     MOV AH, 02H
