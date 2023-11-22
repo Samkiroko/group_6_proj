@@ -62,13 +62,15 @@ get_two_digit_input PROC
     SUB AL, '0' ; Convert from ASCII to number
 
     ; Combine the digits
-    MOV AL, BH  ; Store the first digit in AL for multiplication
     MOV BL, 10  ; Set BL to 10 (multiplier)
-    IMUL BL     ; AL = AL * BL (first digit * 10)
-    ADD AL, BL  ; AL = AL (first digit * 10) + second digit
+    IMUL BL     ; Multiply BH (first digit) by 10
+    MOV BL, AL  ; Store the second digit in BL
+    ADD BH, BL  ; Add the second digit to the result
 
+    MOV AL, BH  ; Move result to AL
     RET
 get_two_digit_input ENDP
+
 
 main_loop:
     ; Fetch current time
@@ -134,6 +136,7 @@ ConvertBCDToDisplay PROC
 
     RET
 ConvertBCDToDisplay ENDP
+
 
 DISP PROC
     MOV AH, 02H
