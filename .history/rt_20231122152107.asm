@@ -42,29 +42,7 @@ START:
     JMP main_loop
 
 get_two_digit_input PROC
-    XOR AX, AX      ; Clear AX
-
-    ; Read first digit
-    MOV AH, 00h
-    INT 16h         ; Wait for keypress
-    SUB AL, '0'     ; Convert from ASCII
-    MOV BL, AL      ; Store the first digit in BL
-    MOV BH, 0       ; Clear BH to use BX as a 16-bit register
-
-    ; Multiply BX by 10
-    MOV CX, 10
-    IMUL CX         ; BX = BX * 10 (result in BX)
-
-    ; Read second digit
-    MOV AH, 00h
-    INT 16h         ; Wait for keypress
-    SUB AL, '0'     ; Convert from ASCII
-
-    ; Combine the two digits
-    ADD BX, AX      ; BX = BX + AX (second digit)
-
-    ; Move result to AL
-    MOV AL, BL      ; AL = lower byte of BX
+    ; ... [Your existing get_two_digit_input procedure] ...
     RET
 get_two_digit_input ENDP
 
@@ -113,64 +91,17 @@ trigger_alarm PROC
 trigger_alarm ENDP
 
 ConvertAndDisplayCurrentTime PROC
-    PUSH AX      ; Save AX register
-
-    ; Extract and display hours
-    MOV AH, CH   ; CH contains hours in BCD
-    CALL ConvertBCDToDisplay
-
-    ; Display colon between hours and minutes
-    MOV DL, ':'
-    MOV AH, 02H
-    INT 21H
-
-    ; Extract and display minutes
-    MOV AH, CL   ; CL contains minutes in BCD
-    CALL ConvertBCDToDisplay
-
-    POP AX       ; Restore AX register
+    ; ... [Your ConvertAndDisplayCurrentTime procedure] ...
     RET
 ConvertAndDisplayCurrentTime ENDP
 
 ConvertAndDisplayAlarmTime PROC
-    PUSH AX      ; Save AX register
-
-    ; Extract and display alarm hours
-    MOV AH, alarmHour   ; Alarm hour in BCD
-    CALL ConvertBCDToDisplay
-
-    ; Display colon
-    MOV DL, ':'
-    MOV AH, 02H
-    INT 21H
-
-    ; Extract and display alarm minutes
-    MOV AH, alarmMinute   ; Alarm minute in BCD
-    CALL ConvertBCDToDisplay
-
-    POP AX       ; Restore AX register
+    ; ... [Your ConvertAndDisplayAlarmTime procedure] ...
     RET
 ConvertAndDisplayAlarmTime ENDP
 
 ConvertBCDToDisplay PROC
-    ; Convert high nibble (tens place)
-    PUSH AX
-    MOV AL, AH
-    AND AL, 0F0h
-    SHR AL, 4
-    ADD AL, '0'
-    MOV DL, AL
-    MOV AH, 02H
-    INT 21H
-    POP AX
-
-    ; Convert low nibble (units place)
-    AND AH, 0Fh
-    ADD AH, '0'
-    MOV DL, AH
-    MOV AH, 02H
-    INT 21H
-
+    ; ... [Your ConvertBCDToDisplay procedure] ...
     RET
 ConvertBCDToDisplay ENDP
 

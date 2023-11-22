@@ -36,7 +36,12 @@ START:
     MOV AH, 09h
     MOV DX, OFFSET setAlarmMsg
     INT 21h
-    CALL ConvertAndDisplayAlarmTime
+    MOV AL, alarmHour
+    CALL ConvertAndDisplayDigit
+    MOV DL, ':'
+    CALL DISP
+    MOV AL, alarmMinute
+    CALL ConvertAndDisplayDigit
 
     ; Main loop
     JMP main_loop
@@ -81,7 +86,8 @@ main_loop:
 update_hour:
     MOV prevHour, CH
     CALL set_cursor_hour
-    CALL ConvertAndDisplayCurrentTime
+    MOV AL, CH
+    CALL ConvertAndDisplayDigit
     JMP check_minute
 
 check_minute:
@@ -92,7 +98,8 @@ check_minute:
 update_minute:
     MOV prevMinute, CL
     CALL set_cursor_minute
-    CALL ConvertAndDisplayCurrentTime
+    MOV AL, CL
+    CALL ConvertAndDisplayDigit
     JMP alarm_check
 
 alarm_check:
@@ -112,67 +119,19 @@ trigger_alarm PROC
     RET
 trigger_alarm ENDP
 
-ConvertAndDisplayCurrentTime PROC
-    PUSH AX      ; Save AX register
-
-    ; Extract and display hours
-    MOV AH, CH   ; CH contains hours in BCD
-    CALL ConvertBCDToDisplay
-
-    ; Display colon between hours and minutes
-    MOV DL, ':'
-    MOV AH, 02H
-    INT 21H
-
-    ; Extract and display minutes
-    MOV AH, CL   ; CL contains minutes in BCD
-    CALL ConvertBCDToDisplay
-
-    POP AX       ; Restore AX register
-    RET
-ConvertAndDisplayCurrentTime ENDP
-
-ConvertAndDisplayAlarmTime PROC
-    PUSH AX      ; Save AX register
-
-    ; Extract and display alarm hours
-    MOV AH, alarmHour   ; Alarm hour in BCD
-    CALL ConvertBCDToDisplay
-
-    ; Display colon
-    MOV DL, ':'
-    MOV AH, 02H
-    INT 21H
-
-    ; Extract and display alarm minutes
-    MOV AH, alarmMinute   ; Alarm minute in BCD
-    CALL ConvertBCDToDisplay
-
-    POP AX       ; Restore AX register
-    RET
-ConvertAndDisplayAlarmTime ENDP
-
-ConvertBCDToDisplay PROC
-    ; Convert high nibble (tens place)
+ConvertAndDisplayDigit PROC
+    AAM
     PUSH AX
-    MOV AL, AH
-    AND AL, 0F0h
-    SHR AL, 4
-    ADD AL, '0'
-    MOV DL, AL
-    MOV AH, 02H
-    INT 21H
-    POP AX
 
-    ; Convert low nibble (units place)
-    AND AH, 0Fh
-    ADD AH, '0'
-    MOV DL, AH
-    MOV AH, 02H
-    INT 21H
+    MOV AL, AH
+    CALL DISP
+
+    POP AX
+    MOV AL, AL
+    CALL DISP
 
     RET
-ConvertBCDToDisplay ENDP
+ConvertAndDisplayDigit ENDP
 
 DISP PROC
     ADD AL, '0'
